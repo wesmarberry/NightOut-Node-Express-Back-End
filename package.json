@@ -1,0 +1,28 @@
+{
+  "name": "nightout-node-express-back-end",
+  "version": "1.0.0",
+  "description": "API EndPoints",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wesmarberry/NightOut-Node-Express-Back-End.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wesmarberry/NightOut-Node-Express-Back-End/issues"
+  },
+  "homepage": "https://github.com/wesmarberry/NightOut-Node-Express-Back-End#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
+    "express": "^4.16.4",
+    "express-session": "^1.16.1",
+    "mongoose": "^5.5.7"
+  }
+}
