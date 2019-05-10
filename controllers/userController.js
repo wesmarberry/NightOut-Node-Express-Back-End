@@ -153,7 +153,23 @@ router.put('/:id', async(req, res, next) => {
 	}
 })
 
+// delete
 
+router.delete('/:id', async (req, res, next) => {
+	try {
+		const deletedUser = await User.findByIdAndRemove(req.params.id)
+		req.session.destroy()
+		res.json({
+			status: 200,
+			data: deletedUser
+		})
+
+
+
+	} catch (err) {
+		next(err)
+	}
+})
 
 
 
