@@ -28,10 +28,12 @@ router.post('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
 	try {
-		const foundActivity = await User.findById(req.params.id)
+		const foundActivity = await Activity.findById(req.params.id)
+		const foundMatching = await Activity.find({apiId: foundActivity.apiId})
 		res.json({
 			status: 200,
 			data: foundActivity,
+			matchingActivityData: foundMatching,
 			session: req.session
 		})
 
@@ -42,7 +44,25 @@ router.get('/:id', async (req, res, next) => {
 	}
 })
 
+// index route
 
+router.get('/', async (req, res, next) => {
+
+
+	try {
+		const foundActivities = await Activity.find({})
+		res.json({
+			status: 200,
+			data: foundActivities,
+			session: req.session
+		})
+
+
+
+	} catch (err) {
+		next(err)
+	}
+})
 
 
 

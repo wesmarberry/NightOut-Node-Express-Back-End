@@ -5,7 +5,12 @@ const ActivitySchema = new mongoose.Schema({
 	name: String,
 	type: String,
 	location: Object,
-	userId: String, 
+	userId: String,
+	apiId: String,
+	reviews:[{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Review'
+	}],  
 });
 
 
