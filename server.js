@@ -31,8 +31,8 @@ const activityController  = require('./controllers/activityController');
 app.use('/api/v1/activity', activityController);
 app.use('/api/v1/user', userController);
 
-app.listen(process.env.PORT || 9000, () => {
-  console.log('listening on port 9000');
+app.listen(process.env.PORT || 3000, () => {
+  console.log('listening on port 3000');
 });
 
 
