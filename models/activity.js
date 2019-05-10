@@ -10,7 +10,8 @@ const ActivitySchema = new mongoose.Schema({
 	reviews:[{
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Review'
-	}],  
+	}],
+	includeInFuture: {type: Boolean, default: false}
 });
 
 
