@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 const Activity = require('../models/activity');
+const Review = require('../models/review');
 const superagent = require('superagent');
 
 
@@ -75,6 +76,29 @@ router.get('/:id', async (req, res, next) => {
 
 	} catch (err) {
 		next(err)
+	}
+})
+
+router.post('/:id/review', async (req, res, next) => {
+	try {
+		const foundActivity = await Activity.findById(req.params.id)
+		console.log(foundActivity);
+		const createdReview = await Review.create(req.body)
+		console.log(createdReview);
+		foundActivity.reviews.unshift(createdReview)
+		foundActivity.save()
+
+		res.json({
+			status: 200,
+			data: createdReview,
+			activity: foundActivity
+		})
+
+	} catch (err) {
+		res.status(400).json({
+			status: 400,
+			error: err
+		})
 	}
 })
 
