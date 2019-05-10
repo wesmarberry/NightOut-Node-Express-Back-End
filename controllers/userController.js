@@ -136,7 +136,22 @@ router.get('/:id', async (req, res, next) => {
 	}
 })
 
+// update
+router.put('/:id', async(req, res, next) => {
+	try {
+		const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {new: true})
+		res.json({
+			status: 200,
+			data: updatedUser,
+			session: req.session
+		})
 
+
+
+	} catch (err) {
+		next(err)
+	}
+})
 
 
 
