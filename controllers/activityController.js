@@ -18,32 +18,43 @@ router.post('/', async (req, res, next) => {
 		// const radius = req.body.distance
 		const type = req.body.type
 		// dummy request
-		const apiRes = await superagent.post('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=41.8853109,-87.6285003&radius=1000&type=restaurant&opennow=true&key=' + process.env.API_KEY)
+		const apiRes = await superagent.post('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=41.8853109,-87.6285003&radius=1000&type='+ type + '&opennow=true&key=' + process.env.API_KEY)
 		console.log(apiRes);
 		// real request
 		// const apiRes = await superagent.post('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&type=' + type + '&opennow=true&key=' + process.env.API_KEY)
 		const randNum = Math.floor(Math.random() * apiRes.body.results.length)
 		const activity = apiRes.body.results[randNum]
 		console.log(activity);
+		const detailsApiCall = await superagent.post('https://maps.googleapis.com/maps/api/place/details/json?placeid=' + activity + '&fields=price_level&key=' + process.env.API_KEY)
+		const allActivities = apiRes.body.results
 		const activityParams = {}
 		activityParams.name = activity.name
 		activityParams.type = type
 		activityParams.location = activity.geometry.location
+		activityParams.price_level = activity.price_level
 		// activityParams.userId = foundUser._id
 		activityParams.apiId = activity.id
 
 
 		const createdActivity = await Activity.create(activityParams)
+
+		// foundUser.actvities.push(createdActivity)
+
 		res.json({
 			status: 201,
 			data: createdActivity,
+			// allActivities: allActivities,
+			price_level: detailsApiCall,
 			session: req.session
 		})
 
 
 
 	} catch (err) {
-		next(err)
+		res.status(400).json({
+			status: 400,
+			error: err
+		})
 	}
 })
 

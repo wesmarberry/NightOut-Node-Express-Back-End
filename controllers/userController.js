@@ -67,12 +67,18 @@ router.post('/new', async (req, res, next) => {
     	// tests if the password is correct
       if (bcrypt.compareSync(req.body.password, userExists.password)) {
       	// if the password is correct set the session properties
+
+
+      	const updatedUser = User.findByIdAndUpdate(userExists._id, {
+      		lat: req.body.lat,
+      		lng: req.body.lng
+      	}, {new: true})
         req.session.userDbId = userExists._id
         req.session.logged = true
         req.session.username = req.body.username
         req.session.message = ''
-        req.session.lat = userExists.lat
-	    req.session.lng = userExists.lng
+        req.session.lat = updatedUser.lat
+	    req.session.lng = updatedUser.lng
 
         res.json({
 	      status: 200,
@@ -81,21 +87,44 @@ router.post('/new', async (req, res, next) => {
         
       } else {
         req.session.message = 'username or password is incorrect'
-        console.log(err);
-	    res.send(err);
+        res.status(400).json({
+			status: 400,
+			error: req.session.message
+		})
       }
     } else {
       req.session.message = "username or password does not exist"
-      console.log(err);
-	  res.send(err);
+      res.status(400).json({
+			status: 400,
+			error: req.session.message
+		})
     }
     
   } catch (err) {
 
-    next(err)
+    res.status(400).json({
+		status: 400,
+		error: err
+	})
   }
 
 })  
+
+// logout
+
+router.get('/', (req, res, next) => {
+	try {
+		req.session.destroy()
+
+	} catch (err) {
+		res.status(400).json({
+		status: 400,
+		error: err
+	})
+	}
+})
+
+
 
 
 // index route

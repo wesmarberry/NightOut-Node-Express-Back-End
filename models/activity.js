@@ -7,6 +7,8 @@ const ActivitySchema = new mongoose.Schema({
 	location: Object,
 	userId: String,
 	apiId: String,
+	photoUrl: String,
+	price_level: String,
 	reviews:[{
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Review'
