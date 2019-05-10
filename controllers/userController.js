@@ -107,7 +107,8 @@ router.get('/', async (req, res, next) => {
 		const foundUsers = await User.find({})
 		res.json({
 			status: 200,
-			data: foundUsers
+			data: foundUsers,
+			session: req.session
 		})
 
 
@@ -117,7 +118,23 @@ router.get('/', async (req, res, next) => {
 	}
 })
 
+//show route
 
+router.get('/:id', async (req, res, next) => {
+	try {
+		const foundUser = await User.findById(req.params.id)
+		res.json({
+			status: 200,
+			data: foundUser,
+			session: req.session
+		})
+
+
+
+	} catch (err) {
+		next(err)
+	}
+})
 
 
 
