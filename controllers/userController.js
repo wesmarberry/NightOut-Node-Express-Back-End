@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+const Activity = require('../models/activity');
 const bcrypt = require('bcryptjs');
 
 
@@ -39,6 +40,7 @@ router.post('/register', async (req, res, next) => {
 	    req.session.logged = true;
 	    req.session.userDbId = createdUser._id
 	    req.session.username = createdUser.username
+	    req.session.email = createdUser.email
 	    req.session.lat = createdUser.lat
 	    req.session.lng = createdUser.lng
 
@@ -46,7 +48,8 @@ router.post('/register', async (req, res, next) => {
 
 	    res.json({
 	      status: 200,
-	      data: 'registration successful'
+	      data: 'registration successful',
+	      session: req.session
 	    });
 	  
 	}
@@ -69,20 +72,20 @@ router.post('/new', async (req, res, next) => {
       	// if the password is correct set the session properties
 
 
-      	const updatedUser = User.findByIdAndUpdate(userExists._id, {
-      		lat: req.body.lat,
-      		lng: req.body.lng
-      	}, {new: true})
+      	const updatedUser = User.findByIdAndUpdate(userExists._id, req.body, {new: true})
+      	console.log(updatedUser);
         req.session.userDbId = userExists._id
         req.session.logged = true
         req.session.username = req.body.username
+        req.session.email = userExists.email
         req.session.message = ''
-        req.session.lat = updatedUser.lat
-	    req.session.lng = updatedUser.lng
+        req.session.lat = req.body.lat
+	    req.session.lng = req.body.lng
 
         res.json({
 	      status: 200,
-	      data: 'login successful'
+	      data: 'login successful',
+	      session: req.session
 	    });
         
       } else {
@@ -112,9 +115,13 @@ router.post('/new', async (req, res, next) => {
 
 // logout
 
-router.get('/', (req, res, next) => {
+router.get('/logout', (req, res, next) => {
 	try {
 		req.session.destroy()
+		res.json({
+			status: 200,
+			data: "log out successful"
+		})
 
 	} catch (err) {
 		res.status(400).json({
@@ -134,9 +141,11 @@ router.get('/', async (req, res, next) => {
 
 	try {
 		const foundUsers = await User.find({})
+		const foundActivities = await Activity.find({})
 		res.json({
 			status: 200,
 			data: foundUsers,
+			activities: foundActivities,
 			session: req.session
 		})
 
@@ -151,10 +160,12 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
 	try {
-		const foundUser = await User.findById(req.params.id)
+		const foundUser = await User.findById(req.params.id).populate('activities')
+		const foundActivities = await Activity.find({userId: req.params.id}).populate('reviews')
 		res.json({
 			status: 200,
 			data: foundUser,
+			activities: foundActivities,
 			session: req.session
 		})
 
@@ -166,7 +177,7 @@ router.get('/:id', async (req, res, next) => {
 })
 
 // update
-router.put('/:id', async(req, res, next) => {
+router.put('/:id/edit', async(req, res, next) => {
 	try {
 		const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {new: true})
 		res.json({

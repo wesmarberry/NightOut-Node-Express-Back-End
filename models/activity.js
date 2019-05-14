@@ -9,6 +9,8 @@ const ActivitySchema = new mongoose.Schema({
 	apiId: String,
 	photoUrl: String,
 	price_level: String,
+	address: String,
+	reviewed: {type: Boolean, default: false},
 	reviews:[{
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Review'
