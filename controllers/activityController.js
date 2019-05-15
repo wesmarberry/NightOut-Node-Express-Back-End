@@ -63,29 +63,36 @@ router.post('/', async (req, res, next) => {
 				let type = req.body.type[i]
 				const otherTypes = ['bowling_alley', 'casino', 'movie_theater', 'museum', 'stadium', 'zoo']
 				let results = []
-				if (type === 'other') {
-					console.log('ran other');
-					const price = req.body.priceLevel[i]
-					console.log(price);
-					const radius = (Number(req.body.distance) * 1609.34)
-					console.log(radius);
+				// if (type === 'other') {
+				// 	console.log('ran other');
+				// 	const price = req.body.priceLevel[i]
+				// 	console.log(price);
+				// 	const radius = (Number(req.body.distance) * 1609.34)
+				// 	console.log(radius);
 					
-					for (let i = 0; i < otherTypes.length; i++){
-						console.log('running other types');
-						type = otherTypes[i]
-						const apiRes = await superagent.post('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&type=' + type + '&opennow=true&maxprice=' + price + '&key=' + process.env.API_KEY)
-						console.log(apiRes.body.results.length);
+				// 	for (let i = 0; i < otherTypes.length; i++){
+				// 		console.log('running other types');
+				// 		type = otherTypes[i]
+				// 		const apiRes = await superagent.post('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&type=' + type + '&opennow=true&maxprice=' + price + '&key=' + process.env.API_KEY)
+				// 		console.log(apiRes.body.results.length);
 						
-						for (let i = 0; i < apiRes.body.results.length; i++) {
-							console.log('ran push');
-							apiRes.body.results[i].type = type
-							results.push(apiRes.body.results[i])
+				// 		for (let i = 0; i < apiRes.body.results.length; i++) {
+				// 			console.log('ran push');
+				// 			apiRes.body.results[i].type = type
+				// 			results.push(apiRes.body.results[i])
 
-						}
-					}
-					
-
-				} else {
+				// 		}
+				// 	}
+				if (type !== 'restaurant' && type !== 'bar') {
+					const radius = (Number(req.body.distance) * 1609.34)
+					const priceLevel = req.body.priceLevel[i]
+					const keyword = type
+					const apiCall = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&keyword=' + keyword + '&opennow=true&maxprice=' + priceLevel + '&key=' + process.env.API_KEY
+					console.log(apiCall);
+					const apiRes = await superagent.post(apiCall)
+					results = apiRes.body.results
+					console.log(results);
+				}	else {
 
 					const radius = (Number(req.body.distance) * 1609.34)
 					const priceLevel = req.body.priceLevel[i]
@@ -104,27 +111,32 @@ router.post('/', async (req, res, next) => {
 
 				}
 				// console.log(apiRes);
-				console.log(results + ' is results');
-				console.log(results.length);
-				const randNum = Math.floor(Math.random() * results.length)
-				console.log(randNum);
-				const activity = results[randNum]
-				console.log(activity);
+				if (results.length === 0 || results === undefined) {
+					console.log('no activity found');
+				} else {
+					console.log(results + ' is results');
+					console.log(results.length);
+					const randNum = Math.floor(Math.random() * results.length)
+					console.log(randNum);
+					const activity = results[randNum]
+					console.log(activity);
 
-				const activityParams = {}
-				activityParams.name = activity.name
-				activityParams.type = activity.type
-				activityParams.address = activity.vicinity
-				activityParams.location = activity.geometry.location
-				activityParams.price_level = activity.price_level
-				activityParams.userId = foundUser._id
-				activityParams.apiId = activity.id
-				// activityParams.photoUrl = activity.photos.html_attributions[0]
-				const createdActivity = await Activity.create(activityParams)
-				foundUser.activities.push(createdActivity)
-				foundUser.save()
-				activities.push(createdActivity)
-				console.log('ran api call');
+					const activityParams = {}
+					activityParams.name = activity.name
+					activityParams.type = activity.type
+					activityParams.address = activity.vicinity
+					activityParams.location = activity.geometry.location
+					activityParams.price_level = activity.price_level
+					activityParams.userId = foundUser._id
+					activityParams.apiId = activity.id
+					// activityParams.photoUrl = activity.photos.html_attributions[0]
+					const createdActivity = await Activity.create(activityParams)
+					foundUser.activities.push(createdActivity)
+					foundUser.save()
+					activities.push(createdActivity)
+					console.log('ran api call');
+					
+				}
 			}
 
 
@@ -156,10 +168,10 @@ router.post('/', async (req, res, next) => {
 
 
 	} catch (err) {
-		res.status(400).json({
-			status: 400,
-			error: err
-		})
+		res.json({
+				status: 400,
+				error: err
+			})
 	}
 })
 
