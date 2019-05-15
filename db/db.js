@@ -1,7 +1,7 @@
 // This is where we will set up our db connection
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/NightOut', {
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false
