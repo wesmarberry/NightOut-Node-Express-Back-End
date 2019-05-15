@@ -61,7 +61,7 @@ router.post('/', async (req, res, next) => {
 			
 			for (let i = 0; i < numActivities; i++) {
 				let type = req.body.type[i]
-				const otherTypes = ['bowling_alley', 'casino', 'movie_theater', 'museam', 'stadium', 'zoo']
+				const otherTypes = ['bowling_alley', 'casino', 'movie_theater', 'museum', 'stadium', 'zoo']
 				let results = []
 				if (type === 'other') {
 					console.log('ran other');

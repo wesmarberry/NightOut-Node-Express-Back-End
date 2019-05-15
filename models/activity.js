@@ -10,6 +10,7 @@ const ActivitySchema = new mongoose.Schema({
 	photoUrl: String,
 	price_level: String,
 	address: String,
+	overallRating: Number,
 	reviewed: {type: Boolean, default: false},
 	reviews:[{
 		type: mongoose.Schema.Types.ObjectId,

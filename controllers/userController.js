@@ -193,6 +193,24 @@ router.put('/:id/edit', async(req, res, next) => {
 	}
 })
 
+
+// get session route
+router.get('/getInfo', async (req, res, next) => {
+	try {
+		const foundUser = await User.findById(req.session.userDbId)
+		res.json({
+			status: 200,
+			data: foundUser
+		})
+	} catch (err) {
+		res.json({
+			status: 400,
+			err: 'hit error'
+		})
+	}
+})
+
+
 // delete
 
 router.delete('/:id', async (req, res, next) => {
