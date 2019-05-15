@@ -113,6 +113,14 @@ router.post('/', async (req, res, next) => {
 				// console.log(apiRes);
 				if (results.length === 0 || results === undefined) {
 					console.log('no activity found');
+					const activityParams = {}
+					activityParams.name = 'No Activity Found'
+					activityParams.type = 'N/A'
+					activityParams.address = 'N/A'
+					activityParams.price_level = 'N/A'
+					const createdActivity = await Activity.create(activityParams)
+					activities.push(createdActivity)
+					const deletedActivity = await Activity.findByIdAndDelete(createdActivity._id)
 				} else {
 					console.log(results + ' is results');
 					console.log(results.length);
