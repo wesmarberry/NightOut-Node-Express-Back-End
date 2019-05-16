@@ -36,6 +36,11 @@ const findFilledParameters = (reqBody) => {
 	return NumActivities
 }
 
+const generateKeyword = (string) => {
+	const NewString = string.replace(/ /g,'&keyword=')
+	return NewString
+}
+
 
 //create route
 
@@ -86,7 +91,7 @@ router.post('/', async (req, res, next) => {
 				if (type !== 'restaurant' && type !== 'bar') {
 					const radius = (Number(req.body.distance) * 1609.34)
 					const priceLevel = req.body.priceLevel[i]
-					const keyword = type
+					const keyword = generateKeyword(type)
 					const apiCall = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&keyword=' + keyword + '&opennow=true&maxprice=' + priceLevel + '&key=' + process.env.API_KEY + '&libraries=places'
 					console.log(apiCall);
 					req.session.apiCall = apiCall
@@ -123,6 +128,7 @@ router.post('/', async (req, res, next) => {
 					activityParams.type = 'N/A'
 					activityParams.address = 'N/A'
 					activityParams.price_level = 'N/A'
+					activityParams.userId = foundUser._id
 					const createdActivity = await Activity.create(activityParams)
 					activities.push(createdActivity)
 					const deletedActivity = await Activity.findByIdAndDelete(createdActivity._id)
