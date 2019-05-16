@@ -90,6 +90,10 @@ router.post('/', async (req, res, next) => {
 					const apiCall = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&keyword=' + keyword + '&opennow=true&maxprice=' + priceLevel + '&key=' + process.env.API_KEY
 					console.log(apiCall);
 					const apiRes = await superagent.post(apiCall)
+					for (let i = 0; i < apiRes.body.results.length; i++) {
+							apiRes.body.results[i].type = type
+
+						}
 					results = apiRes.body.results
 					console.log(results);
 				}	else {
