@@ -87,7 +87,7 @@ router.post('/', async (req, res, next) => {
 					const radius = (Number(req.body.distance) * 1609.34)
 					const priceLevel = req.body.priceLevel[i]
 					const keyword = type
-					const apiCall = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&keyword=' + keyword + '&opennow=true&maxprice=' + priceLevel + '&key=' + process.env.API_KEY
+					const apiCall = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&keyword=' + keyword + '&opennow=true&maxprice=' + priceLevel + '&key=' + process.env.API_KEY + '&libraries=places'
 					console.log(apiCall);
 					const apiRes = await superagent.post(apiCall)
 					for (let i = 0; i < apiRes.body.results.length; i++) {
@@ -101,10 +101,10 @@ router.post('/', async (req, res, next) => {
 					const radius = (Number(req.body.distance) * 1609.34)
 					const priceLevel = req.body.priceLevel[i]
 					console.log(priceLevel);
-					const apiCall = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&type=' + type + '&opennow=true&maxprice=' + priceLevel + '&key=' + process.env.API_KEY
+					const apiCall = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&type=' + type + '&opennow=true&maxprice=' + priceLevel + '&key=' + process.env.API_KEY + '&libraries=places'
 					console.log(apiCall);
 
-					const apiRes = await superagent.post('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&type=' + type + '&opennow=true&maxprice=' + priceLevel + '&key=' + process.env.API_KEY)
+					const apiRes = await superagent.post('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&type=' + type + '&opennow=true&maxprice=' + priceLevel + '&key=' + process.env.API_KEY + '&libraries=places')
 					for (let i = 0; i < apiRes.body.results.length; i++) {
 							apiRes.body.results[i].type = type
 
