@@ -45,8 +45,8 @@ router.post('/', async (req, res, next) => {
 		const foundUser = await User.findById(req.session.userDbId)
 		console.log(foundUser);
 		// api call parameters
-		const userLat = req.session.lat
-		const userLng = req.session.lng
+		const userLat = foundUser.lat
+		const userLng = foundUser.lng
 		const radius = (Number(req.body.distance) * 1609.34)
 		const numActivities = findFilledParameters(req.body)
 		console.log(numActivities + '============== is num activities');
