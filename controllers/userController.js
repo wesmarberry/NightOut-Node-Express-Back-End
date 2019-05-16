@@ -23,6 +23,7 @@ router.post('/register', async (req, res, next) => {
 	userDbEntry.username = req.body.username;
 	userDbEntry.password = passwordHash;
 	userDbEntry.email = req.body.email;
+	// sets the lat lng based on the client retreived location
 	userDbEntry.lat = req.body.lat
 	userDbEntry.lng = req.body.lng
 
@@ -53,7 +54,7 @@ router.post('/register', async (req, res, next) => {
 	    });
 	  
 	}
-	catch (err) {
+	catch (err) { // error message shows when all fields arent filled out
 	    res.json({
 	    	status: 400,
 	    	data: 'Please fill out all required fields'
@@ -76,6 +77,7 @@ router.post('/new', async (req, res, next) => {
       	// if the password is correct set the session properties
 
       	console.log(userExists._id);
+      	// resets the users lat and lng based on client retreived data
       	userExists.lat = req.body.lat
       	userExists.lng =req.body.lng
       	userExists.save()
@@ -95,14 +97,14 @@ router.post('/new', async (req, res, next) => {
 	      session: req.session
 	    });
         
-      } else {
+      } else {// message to be displayed if the username or password doesnt match
         req.session.message = 'username or password is incorrect'
         res.status(400).json({
 			status: 400,
 			data: req.session.message
 		})
       }
-    } else {
+    } else {// message to be displayed if the user doesnt exitst
       req.session.message = "username or password does not exist"
       res.status(400).json({
 			status: 400,
@@ -132,9 +134,9 @@ router.get('/logout', (req, res, next) => {
 
 	} catch (err) {
 		res.status(400).json({
-		status: 400,
-		error: err
-	})
+			status: 400,
+			error: err
+		})
 	}
 })
 
@@ -142,7 +144,7 @@ router.get('/logout', (req, res, next) => {
 
 
 // index route
-
+// finds all the users and all the activities
 router.get('/', async (req, res, next) => {
 
 
@@ -159,12 +161,16 @@ router.get('/', async (req, res, next) => {
 
 
 	} catch (err) {
-		next(err)
+		res.status(400).json({
+			status: 400,
+			error: err
+		})
+
 	}
 })
 
 //show route
-
+// shows the user that is logged in and finds all of their activities with reviews populated
 router.get('/:id', async (req, res, next) => {
 	try {
 		const foundUser = await User.findById(req.params.id).populate('activities')
@@ -179,11 +185,16 @@ router.get('/:id', async (req, res, next) => {
 
 
 	} catch (err) {
-		next(err)
+		res.status(400).json({
+			status: 400,
+			error: err
+		})
+
 	}
 })
 
 // update
+// updates a user's username and/or email from their home page
 router.put('/:id/edit', async(req, res, next) => {
 	try {
 		const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {new: true})
@@ -196,12 +207,17 @@ router.put('/:id/edit', async(req, res, next) => {
 
 
 	} catch (err) {
-		next(err)
+		res.status(400).json({
+			status: 400,
+			error: err
+		})
+
 	}
 })
 
 
 // get session route
+// finds the user that is logged into the session
 router.get('/getInfo', async (req, res, next) => {
 	try {
 		const foundUser = await User.findById(req.session.userDbId)
@@ -219,7 +235,7 @@ router.get('/getInfo', async (req, res, next) => {
 
 
 // delete
-
+// deletes a user
 router.delete('/:id', async (req, res, next) => {
 	try {
 		const deletedUser = await User.findByIdAndRemove(req.params.id)
@@ -232,7 +248,11 @@ router.delete('/:id', async (req, res, next) => {
 
 
 	} catch (err) {
-		next(err)
+		res.status(400).json({
+			status: 400,
+			error: err
+		})
+
 	}
 })
 
