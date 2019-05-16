@@ -42,7 +42,7 @@ const findFilledParameters = (reqBody) => {
 router.post('/', async (req, res, next) => {
 	try {
 		console.log(req.body);
-		const foundUser = await User.findById(req.session.userDbId)
+		const foundUser = await User.findById(req.body.userId)
 		console.log(foundUser);
 		// api call parameters
 		const userLat = foundUser.lat
