@@ -54,7 +54,10 @@ router.post('/register', async (req, res, next) => {
 	  
 	}
 	catch (err) {
-	    next(err)
+	    res.json({
+	    	status: 400,
+	    	data: 'Please fill out all required fields'
+	    })
 	}
 })
 

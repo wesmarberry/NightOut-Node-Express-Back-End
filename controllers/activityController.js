@@ -37,7 +37,7 @@ const findFilledParameters = (reqBody) => {
 }
 
 const generateKeyword = (string) => {
-	const NewString = string.replace(/ /g,'&keyword=')
+	const NewString = string.replace(/ /g,'_')
 	return NewString
 }
 
