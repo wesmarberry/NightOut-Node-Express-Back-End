@@ -261,8 +261,11 @@ router.get('/', async (req, res, next) => {
 
 router.delete('/delete', async (req, res, next) => {
 	try {
-		const foundUser = await User.findById(req.session.userDbId)
+		console.log(req.body[0].userId);
+		const foundUser = await User.findById(req.body[0].userId)
+		console.log('====================');
 		console.log(foundUser);
+		console.log('======================');
 		console.log(req.body);
 		for (let i = 0; i < req.body.length; i++) {
 			const deletedActivity = await Activity.findByIdAndDelete(req.body[i]._id)
