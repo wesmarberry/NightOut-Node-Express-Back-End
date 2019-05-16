@@ -96,14 +96,14 @@ router.post('/new', async (req, res, next) => {
         req.session.message = 'username or password is incorrect'
         res.status(400).json({
 			status: 400,
-			error: req.session.message
+			data: req.session.message
 		})
       }
     } else {
       req.session.message = "username or password does not exist"
       res.status(400).json({
 			status: 400,
-			error: req.session.message
+			data: req.session.message
 		})
     }
     
