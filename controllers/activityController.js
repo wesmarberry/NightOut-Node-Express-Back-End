@@ -51,11 +51,11 @@ router.post('/', async (req, res, next) => {
 		const numActivities = findFilledParameters(req.body)
 		console.log(numActivities + '============== is num activities');
 		if (numActivities === true || req.body.distance === 0) {
-			res.json({
-			status: 201,
-			data: 'Please fill out required fields',
-			session: req.session
-		})
+				res.json({
+				status: 201,
+				data: 'Please fill out required fields',
+				session: req.session
+			})
 		} else {
 			const activities = []
 			
@@ -219,6 +219,9 @@ router.post('/:id/review', async (req, res, next) => {
 		console.log(foundActivity + '============================= is foundActivity');
 		const createdReview = await Review.create(req.body)
 		console.log(createdReview + '============================ is createdReview');
+		const foundUser = await User.findById(foundActivity.userId)
+		createdReview.username = foundUser.username
+		createdReview.save()
 		foundActivity.reviewed = true
 		foundActivity.reviews.unshift(createdReview)
 		foundActivity.save()
@@ -270,7 +273,7 @@ router.delete('/delete', async (req, res, next) => {
 		for (let i = 0; i < req.body.length; i++) {
 			const deletedActivity = await Activity.findByIdAndDelete(req.body[i]._id)
 			foundUser.activities.pop()
-			foundUser.save()
+			await foundUser.save()
 		}
 		res.json({
 			status: 200,
