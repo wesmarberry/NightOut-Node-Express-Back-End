@@ -89,6 +89,7 @@ router.post('/', async (req, res, next) => {
 					const keyword = type
 					const apiCall = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&keyword=' + keyword + '&opennow=true&maxprice=' + priceLevel + '&key=' + process.env.API_KEY + '&libraries=places'
 					console.log(apiCall);
+					req.session.apiCall = apiCall
 					const apiRes = await superagent.post(apiCall)
 					for (let i = 0; i < apiRes.body.results.length; i++) {
 							apiRes.body.results[i].type = type
@@ -103,7 +104,7 @@ router.post('/', async (req, res, next) => {
 					console.log(priceLevel);
 					const apiCall = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&type=' + type + '&opennow=true&maxprice=' + priceLevel + '&key=' + process.env.API_KEY + '&libraries=places'
 					console.log(apiCall);
-
+					req.session.apiCall = apiCall
 					const apiRes = await superagent.post('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&type=' + type + '&opennow=true&maxprice=' + priceLevel + '&key=' + process.env.API_KEY + '&libraries=places')
 					for (let i = 0; i < apiRes.body.results.length; i++) {
 							apiRes.body.results[i].type = type
