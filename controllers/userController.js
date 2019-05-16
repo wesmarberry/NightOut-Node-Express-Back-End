@@ -65,15 +65,19 @@ router.post('/new', async (req, res, next) => {
   try {
   	// finds user if user exists
     const userExists = await User.findOne({'username': req.body.username})
+    console.log(userExists);
     // tests if user exists and sets the session properties
     if (userExists && userExists.password) {
     	// tests if the password is correct
       if (bcrypt.compareSync(req.body.password, userExists.password)) {
       	// if the password is correct set the session properties
 
-
-      	const updatedUser = User.findByIdAndUpdate(userExists._id, req.body, {new: true})
-      	console.log(updatedUser);
+      	console.log(userExists._id);
+      	userExists.lat = req.body.lat
+      	userExists.lng =req.body.lng
+      	userExists.save()
+      	console.log(userExists);
+      	console.log('got past setting lat lng');
         req.session.userDbId = userExists._id
         req.session.logged = true
         req.session.username = req.body.username
