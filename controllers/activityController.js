@@ -358,7 +358,7 @@ router.delete('/:id', async (req, res, next) => {
 		const index = await foundUser.activities.indexOf(req.params.id)
 		console.log(index);
         // removes pet from array
-        foundUser.activities.splice(index, 1)
+        await foundUser.activities.splice(index, 1)
         // saves user and redirects to home page
         console.log('======================');
         foundUser.save()
