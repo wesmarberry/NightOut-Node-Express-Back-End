@@ -346,7 +346,35 @@ router.put('/:id/overallRating', async (req, res, next) => {
 	}
 })
 
+// deletes an activity
+router.delete('/:id', async (req, res, next) => {
+	try {
+		const foundActivity = await Activity.findById(req.params.id)
+		console.log(foundActivity);
 
+		const foundUser = await User.findOne({activities: req.params.id})
+		console.log(foundUser);
+		console.log(foundUser.activities);
+		const index = await foundUser.activities.indexOf(req.params.id)
+		console.log(index);
+        // removes pet from array
+        foundUser.activities.splice(index, 1)
+        // saves user and redirects to home page
+        console.log('======================');
+        foundUser.save()
+        const deletedActivity = await Activity.findByIdAndDelete(req.params.id)
+        res.json({
+			status: 200,
+			user: foundUser
+		})
+	} catch (err) {
+		next(err)
+		res.json({
+			status: 400,
+			data: err
+		})
+	}
+})
 
 
 
