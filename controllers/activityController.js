@@ -64,8 +64,26 @@ router.post('/', async (req, res, next) => {
 		const radius = (Number(req.body.distance) * 1609.34)
 		// runs the function fo find the number of activities that have been filled out
 		const numActivities = findFilledParameters(req.body)
+		console.log(req.body);
+		const othermaxPrice = ''
+		const otheropenNow = ''
+		if (req.body.maxPrice === 'true') {
+			maxPrice = 'maxprice'
+		} else {
+			maxPrice = 'minprice'
+		}
+
+		if (req.body.openNow === 'true') {
+			openNow = 'true'
+		} else {
+			openNow = 'false'
+		}
+		console.log('====================');
+		console.log(maxPrice);
+		console.log(openNow);
 		// if the activities were not fully filled out by the user it returns the error message
 		if (numActivities === true || req.body.distance === 0) {
+				console.log('ran upper error');
 				res.json({
 				status: 400,
 				data: 'Please fill out required fields',
@@ -74,9 +92,11 @@ router.post('/', async (req, res, next) => {
 		} else {
 			// initialized the activities array to be randomized from the API call
 			const activities = []
+			console.log(numActivities);
 			// loops over the number of activities that were filled out
 			for (let i = 0; i < numActivities; i++) {
 				let type = req.body.type[i]
+				console.log(req.body.type[i]);
 				let results = []
 				// if the other text field is filled out it makes an API call with the keyword property
 				// instead of the "Type" property
@@ -86,7 +106,7 @@ router.post('/', async (req, res, next) => {
 					// runs the function to turn keywords with spaces into keywords with underscores
 					const keyword = generateKeyword(type)
 					// the google places API call based on the user input
-					const apiCall = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&keyword=' + keyword + '&opennow=true&maxprice=' + priceLevel + '&key=' + process.env.API_KEY + '&libraries=places'
+					const apiCall = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&keyword=' + keyword + '&opennow=' + openNow  + '&' + maxPrice + '=' + priceLevel + '&key=' + process.env.API_KEY + '&libraries=places'
 					// stores the apiCall in the session for tracking
 					req.session.apiCall = apiCall
 					// the API call using superagent
@@ -99,14 +119,14 @@ router.post('/', async (req, res, next) => {
 					// sets the results	
 					results = apiRes.body.results
 				}	else {
-
+					console.log('running else');
 					const radius = (Number(req.body.distance) * 1609.34)
 					const priceLevel = req.body.priceLevel[i]
 					// creates the api call based on the user input from the form on the client side
-					const apiCall = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&type=' + type + '&opennow=true&maxprice=' + priceLevel + '&key=' + process.env.API_KEY + '&libraries=places'
-
+					const apiCall = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&type=' + type + '&opennow=' + openNow + '&' + maxPrice + '=' + priceLevel + '&key=' + process.env.API_KEY + '&libraries=places'
+					console.log(apiCall);
 					req.session.apiCall = apiCall
-					const apiRes = await superagent.post('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&type=' + type + '&opennow=true&maxprice=' + priceLevel + '&key=' + process.env.API_KEY + '&libraries=places')
+					const apiRes = await superagent.post('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&type=' + type + '&opennow=' + openNow + '&' + maxPrice + '=' + priceLevel + '&key=' + process.env.API_KEY + '&libraries=places')
 					for (let i = 0; i < apiRes.body.results.length; i++) {
 							apiRes.body.results[i].type = type
 
