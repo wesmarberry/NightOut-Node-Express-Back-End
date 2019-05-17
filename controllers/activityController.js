@@ -74,9 +74,9 @@ router.post('/', async (req, res, next) => {
 		}
 
 		if (req.body.openNow === 'true') {
-			openNow = 'true'
+			openNow = '&opennow=true'
 		} else {
-			openNow = 'false'
+			openNow = ''
 		}
 		console.log('====================');
 		console.log(maxPrice);
@@ -106,7 +106,7 @@ router.post('/', async (req, res, next) => {
 					// runs the function to turn keywords with spaces into keywords with underscores
 					const keyword = generateKeyword(type)
 					// the google places API call based on the user input
-					const apiCall = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&keyword=' + keyword + '&opennow=' + openNow  + '&' + maxPrice + '=' + priceLevel + '&key=' + process.env.API_KEY + '&libraries=places'
+					const apiCall = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&keyword=' + keyword +  openNow  + '&' + maxPrice + '=' + priceLevel + '&key=' + process.env.API_KEY + '&libraries=places'
 					// stores the apiCall in the session for tracking
 					req.session.apiCall = apiCall
 					// the API call using superagent
@@ -123,10 +123,10 @@ router.post('/', async (req, res, next) => {
 					const radius = (Number(req.body.distance) * 1609.34)
 					const priceLevel = req.body.priceLevel[i]
 					// creates the api call based on the user input from the form on the client side
-					const apiCall = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&type=' + type + '&opennow=' + openNow + '&' + maxPrice + '=' + priceLevel + '&key=' + process.env.API_KEY + '&libraries=places'
+					const apiCall = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&type=' + type + openNow + '&' + maxPrice + '=' + priceLevel + '&key=' + process.env.API_KEY + '&libraries=places'
 					console.log(apiCall);
 					req.session.apiCall = apiCall
-					const apiRes = await superagent.post('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&type=' + type + '&opennow=' + openNow + '&' + maxPrice + '=' + priceLevel + '&key=' + process.env.API_KEY + '&libraries=places')
+					const apiRes = await superagent.post('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + userLat + ',' + userLng + '&radius=' + radius + '&type=' + type + openNow + '&' + maxPrice + '=' + priceLevel + '&key=' + process.env.API_KEY + '&libraries=places')
 					for (let i = 0; i < apiRes.body.results.length; i++) {
 							apiRes.body.results[i].type = type
 
